@@ -1,28 +1,131 @@
-# Planned coding challenge: Memory lane
+# Memory Lane
 
-**Please avoid initiating pull requests on this repository or forking this repository. To submit your solution, either set up a repository on your own account or forward a zip file to the appropriate contact within our talent team.**
+A web application that allows users to create and share their memory lanes with friends. Users can create events with at least one image, descriptions, and timestamps to create a timeline of memories.
 
-### Problem definition
+## Presentation
 
-After a series of discovery calls we found out a problem that our users are facing. They are having a hard time sharing their memories with friends and family. They are using a combination of social media, messaging apps, and email to share their memories. They are looking for a solution that allows them to store and share their memories in a single place.
+- You can see the quick overview of the app [here](https://www.loom.com/share/a58b2ecab13b426ca792f3420689d35c?sid=32d89168-085b-4341-9154-cf2a2ce0da11)
 
-As a first iteration for this solution, we want to build a web application that allows users to create a memory lane and share it with friends and family. A memory lane is a collection of events that happened in a chronological order. Each event consists of a title, a description, a timestamp, and at least one image.
+## Features
 
-## Deliverables
+- Create and manage memory lanes
+- Add events with multiple images (atleast 1 image and up to 4 images per event)
+- Timeline and event view
+- Image upload support
+- Pagination and sorting of events
 
-- Clone this repository and create a new branch with your name. Open a pull request on your own instance of the repository.
-- An updated README providing a high level explanation of your implementation.
-- **Screenshots or a short video/gif** showing your UI implementation.
-- Update the API to accommodate for your technical design. Run the API by using `npm run serve:api`.
-- The provided mockup is only for reference and inspiration. Feel free to improve it!
+## Tech Stack
 
-### FAQ
+- Frontend: Vite + React + TypeScript + Tanstack Query + React Router
+- Backend: Express.js + TypeScript
+- Database: Prisma
+- File Storage: Uploadthing
+- Styling: TailwindCSS
+- Components: Shadcn/UI
 
-- **Can I add a framework like Next?** If you have the time, go for it, we want to see you use your favorite tools.
-- **Is user authentication required?** No, it is not required.
-- **Can I use a component library?** Yes, you can use a component library.
-- **What will you be looking for?** Good user experience, reusable code, and a well thought out technical design.
+## API Documentation
 
-### Inspiration mockup
+### Base URL
 
-![Memory lane mockup](./memory_lane.png)
+http://localhost:4001/api
+
+### Endpoints
+
+#### Users
+
+- `POST /users/signup` - Create new user
+- `POST /users/login` - User login
+
+#### Memory Lanes
+
+- `POST /memory-lanes` - Create memory lane
+- `GET /memory-lanes/:memoryLaneId` - Get memory lane
+- `PUT /memory-lanes/:memoryLaneId` - Update memory lane
+
+#### Events
+
+- `POST /events` - Create event
+- `GET /events/:eventId` - Get event
+- `PUT /events/:eventId` - Update event
+- `DELETE /events/:eventId` - Delete event
+- `GET /memory-lanes/:memoryLaneId/events` - Get paginated events
+
+#### File Upload
+
+- `POST /uploadthing` - Upload images (max 4MB per file, 4 files max)
+
+## Getting Started
+
+1. Clone the repository
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Start the API server:
+
+   ```bash
+   npm run serve:api
+   ```
+
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+## Environment Variables
+
+Create a `.env` file with:
+
+UPLOADTHING_TOKEN="your-uploadthing-token"
+
+## Data Models
+
+### User
+
+- id: string
+- name: string
+- email: string
+- memoryLane: MemoryLane (one-to-one relationship)
+
+### Memory Lane
+
+- id: string
+- title: string
+- description: string (optional)
+- userId: string (one-to-one relationship)
+- events: Event[] (one-to-many relationship)
+
+### Event
+
+- id: string
+- title: string
+- description: string
+- timestamp: Date ISO String
+- memoryLaneId: string
+- images: Image[] (one-to-many relationship)
+
+### Image
+
+- id: string
+- url: string
+- name: string
+- eventId: string
+
+## Implementation Details
+
+- Uses TypeScript for type safety across both frontend and backend
+- Implements Zod schemas for request validation
+- Prisma transactions for data integrity
+- Pagination support for event listings
+- Image upload handling with size and count restrictions
+
+## Future Improvements
+
+- Add proper authentication, authorization, and user profile view
+- Implement sharing user realtions and tag friends
+- Add search functionality
+- Implement caching for popular memory lanes
+- Data analytics
+- Testing
