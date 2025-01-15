@@ -1,16 +1,60 @@
-import express from 'express'
+import express, { RequestHandler } from 'express'
 import {
   createEvent,
-  getEvents,
+  getEventbyId,
   updateEvent,
   deleteEvent,
+  getPaginatedEvents,
 } from '../controllers/eventController.js'
+import type {
+  CreateEventBody,
+  Event,
+  EventRouteParams,
+  MemoryLaneRouteParams,
+  PaginationQuery,
+  PaginatedEventsResponse,
+  ErrorResponse,
+  SuccessResponse,
+} from '../types/index.js'
 
-const router = express.Router({ mergeParams: true })
+// Router for single event operations (no memoryLaneId needed)
+const eventRoutes = express.Router()
 
-router.post('/', createEvent)
-router.get('/', getEvents)
-router.put('/:id', updateEvent)
-router.delete('/:id', deleteEvent)
+eventRoutes.get(
+  '/:eventId',
+  getEventbyId as RequestHandler<EventRouteParams, Event | ErrorResponse>
+)
+eventRoutes.put(
+  '/:eventId',
+  updateEvent as RequestHandler<
+    EventRouteParams,
+    Event | ErrorResponse,
+    CreateEventBody
+  >
+)
+eventRoutes.delete(
+  '/:eventId',
+  deleteEvent as RequestHandler<
+    EventRouteParams,
+    SuccessResponse | ErrorResponse
+  >
+)
+eventRoutes.post(
+  '/',
+  createEvent as RequestHandler<{}, Event | ErrorResponse, CreateEventBody>
+)
 
-export default router
+// Router for memory lane scoped operations
+const memoryLaneEventsRoutes = express.Router({ mergeParams: true })
+
+memoryLaneEventsRoutes.get(
+  '/',
+  getPaginatedEvents as RequestHandler<
+    MemoryLaneRouteParams,
+    PaginatedEventsResponse | ErrorResponse,
+    {},
+    PaginationQuery
+  >
+)
+
+export { eventRoutes, memoryLaneEventsRoutes }
