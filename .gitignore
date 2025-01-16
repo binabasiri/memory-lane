@@ -23,5 +23,10 @@ dist-ssr
 *.sln
 *.sw?
 
+#DB files
 *.db
 *.sqlite
+*.db-journal
+
+#Environment files
+.env

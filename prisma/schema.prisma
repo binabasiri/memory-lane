@@ -1,0 +1,51 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id          String      @id @default(cuid())
+  name        String
+  email       String      @unique
+  memoryLane  MemoryLane?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model MemoryLane {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  userId      String    @unique
+  user        User      @relation(fields: [userId], references: [id])
+  events      Event[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Event {
+  id           String     @id @default(cuid())
+  title        String
+  description  String
+  timestamp    DateTime
+  memoryLaneId String
+  memoryLane   MemoryLane @relation(fields: [memoryLaneId], references: [id])
+  images       Image[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model Image {
+  id          String   @id @default(cuid())
+  name        String
+  url         String
+  eventId     String
+  event       Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@unique([eventId, url], name: "eventId_url")
+}

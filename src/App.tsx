@@ -1,22 +1,36 @@
-import { CubeIcon } from '@heroicons/react/20/solid'
-import './App.css'
+import { Suspense, lazy } from 'react'
+import { Routes, Route } from 'react-router-dom'
+import { Toaster } from '@/components/ui/toaster'
+import { Navbar } from '@/components/ui/navbar'
+import { LoadingPage } from '@/components/loading'
+
+const SignupPage = lazy(() => import('@/pages/SignupPage'))
+const LoginPage = lazy(() => import('@/pages/LoginPage'))
+const MemoryLanePage = lazy(() => import('@/pages/MemoryLanePage'))
+const EventPage = lazy(() => import('@/pages/EventPage'))
 
 function App() {
   return (
-    <div>
-      <div className='mx-auto max-w-7xl sm:px-6 lg:px-8 mt-32'>
-        <div className='overflow-hidden rounded-lg bg-white shadow h-96'>
-          <div className='px-4 py-5 sm:p-6'>
-            <div className='flex items-center'>
-              <CubeIcon className='h-16 w-16 inline-block' />
-              <h1 className='text-4xl font-semibold text-gray-900 mb-4 ml-4 mt-4'>
-                Memory lane
-              </h1>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <>
+      <Navbar />
+      <Suspense fallback={<LoadingPage />}>
+        <Routes>
+          <Route path='/' element={<SignupPage />} />
+          <Route path='/login' element={<LoginPage />} />
+          <Route
+            path='/memory-lane/:memoryLaneId'
+            element={<MemoryLanePage />}
+          />
+          <Route
+            path='/memory-lane/:memoryLaneId/edit'
+            element={<MemoryLanePage />}
+          />
+          <Route path='/event/:eventId' element={<EventPage />} />
+          <Route path='/event/:eventId/edit' element={<EventPage />} />
+        </Routes>
+      </Suspense>
+      <Toaster />
+    </>
   )
 }
 
